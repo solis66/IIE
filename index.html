@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拍照识别物体</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "SimSun", "宋体", serif;
+            background: linear-gradient(135deg, #FFD93D 0%, #FF6B6B 50%, #4ECDC4 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 412px;
+            height: 917px;
+            background: rgba(255, 240, 200, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 47px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            padding-top: 71px;
+            margin-bottom: 81px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 400;
+            color: #E67E22;
+            letter-spacing: 2px;
+        }
+
+        .camera-area {
+            width: 313px;
+            height: 655px;
+            margin: 0 auto;
+            background: rgba(255, 250, 230, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 47px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .viewfinder {
+            position: absolute;
+            top: 124px;
+            left: 39px;
+            width: 235px;
+            height: 204px;
+            background: #E8E8E8;
+            border-radius: 33px;
+            border: 3px dashed #B0B0B0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .viewfinder:hover {
+            border-color: #E67E22;
+            background: #FFF8E7;
+        }
+
+        .viewfinder-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
+        }
+
+        .viewfinder-icon::before {
+            content: '';
+            width: 24px;
+            height: 24px;
+            border: 3px solid white;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .viewfinder-icon::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            margin-top: 14px;
+            margin-left: 14px;
+        }
+
+        .btn-container {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .btn {
+            width: 100px;
+            height: 100px;
+            border: none;
+            border-radius: 50%;
+            font-size: 40px;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(230, 126, 34, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.95);
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        .scan-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #E67E22, transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .corner-marks {
+            position: absolute;
+            top: 124px;
+            left: 39px;
+            width: 235px;
+            height: 204px;
+            pointer-events: none;
+        }
+
+        .corner {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border: 4px solid #E67E22;
+            border-radius: 6px;
+        }
+
+        .corner-top-left {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-top-right {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner-bottom-left {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner-bottom-right {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+        }
+
+        .flash-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .flash-indicator:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .flash-indicator::before {
+            content: '⚡';
+            font-size: 16px;
+        }
+
+        .camera-switch {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .camera-switch:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .camera-switch::before {
+            content: '↺';
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                width: 100%;
+                height: auto;
+                min-height: 917px;
+                border-radius: 30px;
+            }
+            
+            .title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Welcome to IIE !!!</h1>
+        </div>
+        
+        <div class="camera-area">
+            <div class="camera-switch"></div>
+            <div class="flash-indicator"></div>
+            
+            <div class="viewfinder">
+                <div class="viewfinder-icon"></div>
+            </div>
+            
+            <div class="corner-marks">
+                <div class="corner corner-top-left"></div>
+                <div class="corner corner-top-right"></div>
+                <div class="corner corner-bottom-left"></div>
+                <div class="corner corner-bottom-right"></div>
+            </div>
+            
+            <div class="scan-lines">
+                <div class="scan-line"></div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn btn-primary">📷</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const captureBtn = document.querySelector('.btn-primary');
+        const viewfinder = document.querySelector('.viewfinder');
+        
+        captureBtn.addEventListener('click', () => {
+            viewfinder.style.background = '#49BBED';
+            viewfinder.style.borderColor = '#FFFFFF';
+            
+            setTimeout(() => {
+                viewfinder.style.background = '#E8E8E8';
+                viewfinder.style.borderColor = '#B0B0B0';
+            }, 300);
+        });
+    </script>
+</body>
+</html>
