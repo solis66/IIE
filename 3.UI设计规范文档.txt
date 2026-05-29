@@ -86,3 +86,5 @@ Prompt (英文):
 Mobile App UI, Home screen dashboard for an English vocabulary learning app.
 [Top section]: A prominent, attractive CTA card button with a "Camera icon" that says "Tap to Scan & Learn".
 [Bottom section]: "History Scan Records" list, displaying previous scanned items in a clean grid/list format (thumbnail of the compressed photo, English word, and scan timestamp). Minimalist card design, friendly and clean UI, white and light grey background, light mode.
+
+

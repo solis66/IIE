@@ -1,0 +1,35 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color gray_100
+color gray_200
+color gray_300
+color gray_400
+color gray_500
+color gray_600
+color gray_700
+color gray_800
+color gray_900
+color ios_bg
+color ios_blue
+color ios_green
+color white
+color yellow_400
+color yellow_50
+color yellow_500
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+string app_slogan
+string btn_back_home
+string btn_camera
+string btn_camera_hint
+string btn_scan_again
+string history_title
+string history_view_all
+string label_chinese
+string label_example
+string loading_recognizing
+style Theme.LexiScan
+xml backup_rules
+xml data_extraction_rules

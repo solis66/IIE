@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">LexiScan</string>
+    <string name="app_slogan">看见世界，解锁英语</string>
+    <string name="btn_camera">拍照识别物体</string>
+    <string name="btn_camera_hint">Tap to Scan &amp; Learn</string>
+    <string name="history_title">历史识别记录</string>
+    <string name="history_view_all">查看全部</string>
+    <string name="loading_recognizing">正在识别中，请稍候...</string>
+    <string name="btn_back_home">返回首页</string>
+    <string name="btn_scan_again">再拍一次</string>
+    <string name="label_chinese">中文释义</string>
+    <string name="label_example">实用场景例句</string>
+</resources>
