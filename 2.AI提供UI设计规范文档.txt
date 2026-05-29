@@ -1,0 +1,86 @@
+我想要设计一个物品英文识别的手机APP，模块包括：
+一、首页：
+		1、一个“拍照”按钮，点击后能够跳转到物品识别页面-进行物品英文名的识别
+		2、将物品识别的记录存储到本地
+二、物品识别界面-进行物品英文名的识别
+
+详细功能
+1. 视图与布局模块
+全屏相机预览区：调取手机后置摄像头，提供高帧率、清晰的实时画面预览。
+
+顶部工具栏：
+
+返回按钮：点击返回首页。
+
+闪光灯开关：支持“开启/关闭/自动”三种模式，便于在暗光环境下识别。
+
+底部控制区：
+
+相册导入按钮：位于拍照键左侧，点击可打开系统相册选择已有图片进行识别。
+
+圆形拍照键：位于正中央，点击触发单张照片抓取并进入识别流程。
+
+2. 核心功能与交互流程
+A. 目标锁定与对焦（识别前）
+自动/手动对焦：摄像头默认自动对焦。用户点击屏幕任意区域，可进行手动对焦与测光。
+
+智能框选（建议增加）：AI在预览画面中实时检测物品，并在物品周围显示淡淡的动态识别框，引导用户对准目标，提高拍照准确率。
+
+B. 物品分析与加载（识别中）
+定格动效：用户点击拍照后，画面定格，并伴随一个“科技感”的扫描光线动效（从上至下扫描），缓解用户等待焦虑。
+
+Loading提示：界面中央显示“正在识别中，请稍候...”的提示文案。
+
+C. 结果呈现弹窗/浮层（识别后）
+识别成功后，在屏幕中下方弹出结果卡片（不遮挡原图核心区域），包含以下详细信息：
+
+英文名称：加粗大字显示（例如：Apple）。
+
+发音按钮：点击触发美式/英式真人语音朗读。
+
+音标显示：提供标准的国际音标（例如：/ˈæpl/）。
+
+中文翻译：准确的中文解释（例如：苹果）。
+
+置信度/多重候选（可选）：如果AI识别出多个可能物品，支持左右滑动切换不同的识别结果（如：苹果、水果、红富士）。
+
+3. 数据联动与本地存储
+当识别结果成功输出时，系统自动触发后台存储逻辑：
+
+自动保存：将原图（压缩版）、物品英文名、中文翻译、音标以及识别时间戳打包，实时存入手机本地数据库（如 SQLite 或 Room）。
+
+去重/更新逻辑：若同一物品被多次识别，本地记录可选择叠加次数，或作为新记录按时间倒序排列，以便首页列表调用。
+
+请提供UI设计规范的提示词
+
+我现在想要开发一个“物品英文名识别” app，现在需要输出高保真的原型图，请通过以下方式帮我完成所有界面的原型设计，并确保这些原型界面可以直接用于开发：
+1、用户体验分析：先分析这个App的主要功能和用户需求，确定核心交互逻辑。
+2、产品界面规划：作为产品经理，定义关键界面，确保信息架构合理
+3、高保真UI设计：作为UI设计师，设计贴近真实IOS/Android设计规范的界面，使用现代化的UI元素，使其具有良好的视觉体验。
+4、HTML原型实现：使用HTML+Tailwind CSS(或Bootstrap)生成所有原型界面，并使用FontAwesome(或其他开源UI组件)让界面更加精美、接近真实的App设计。拆分代码文件，保持结构清晰
+5、真实感增强：界面尺寸应模拟6.7英寸，并让界面圆角化，使其更像真实的手机界面。使用真实的UI图片，而非占位符图片（可从Unsplash、Pexels、Apple官方UI资源中选择）
+📷 页面一：全屏相机预览与拍照界面 (识别前/中)
+这个提示词专注于全屏相机的布局、底部圆形拍照键、闪光灯图标，以及你提到的智能框选/扫描特效。
+
+Prompt (英文):
+Mobile App UI, Camera recognition interface, screen displays full-screen real-time camera preview of a desk with a coffee cup and a book.
+[Top bar]: transparent overlay, sleek white icons for "Back" and "Flashlight (Auto mode)".
+[Center screen]: a subtle, glowing, semi-transparent AI bounding box framing the coffee cup, tech-style scanning light line scanning from top to bottom.
+[Bottom bar]: A large glowing white circular shutter button in the center, a miniature "Album gallery" icon on the left. High fidelity, modern UI/UX design, dark/light contrast, 4k.
+
+📝 页面二：结果呈现卡片界面 (识别后)
+这个提示词专注于拍照后画面定格，并从底部弹出的英文单词结果卡片（包含大字英文、音标、发音图标、中文翻译）。
+
+Prompt (英文):
+Mobile App UI, AI object recognition result screen. The background is a frozen photo of an apple on a table.
+[Bottom pop-up card]: A sleek rounded glassmorphism card sliding up from the bottom.
+[Card Content]: Bold typography showing "Apple" in large font, phonetic transcription "/ˈæpl/" next to a small "Audio/Speaker" icon. Below it, the Chinese translation "苹果".
+[Interaction]: Small dots indicating a swipeable carousel for multiple alternative results (e.g., fruit, red fuji). Clean UI, premium typography, Apple design award style, photorealistic background.
+
+🏠 补充：首页与本地历史记录界面
+为了让你的产品闭环，这里补充一个首页的提示词，包含巨大的“拍照识别”大按钮和下方的“本地历史存盘列表”。
+
+Prompt (英文):
+Mobile App UI, Home screen dashboard for an English vocabulary learning app.
+[Top section]: A prominent, attractive CTA card button with a "Camera icon" that says "Tap to Scan & Learn".
+[Bottom section]: "History Scan Records" list, displaying previous scanned items in a clean grid/list format (thumbnail of the compressed photo, English word, and scan timestamp). Minimalist card design, friendly and clean UI, white and light grey background, light mode.
