@@ -1,0 +1,58 @@
+# ─────────────────────────────────────────────
+# LexiScan / IIE 项目 .gitignore
+# ─────────────────────────────────────────────
+
+# ── Gradle 构建产物 ──
+.gradle/
+build/
+app/build/
+*/build/
+captures/
+.cxx/
+
+# ── Android / Kotlin 编译产物 ──
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# ── 本地配置（含 SDK 路径与密钥，不可提交）──
+local.properties
+app/local.properties
+
+# ── IDE 配置（Android Studio / IntelliJ）──
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.kotlin/
+
+# ── Keystore 签名文件 ──
+*.jks
+*.keystore
+
+# ── Python（sam2_server）──
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ── 模型源文件（仓库中只保留 assets/u2netp.tflite）──
+u2netp.onnx.data
+u2netp.pth.zip
+u2netp.tflite
+
+# ── 日志与临时文件 ──
+*.log
+*.tmp
+*.bak
+
+# ── 系统文件 ──
+.DS_Store
+Thumbs.db
+desktop.ini
