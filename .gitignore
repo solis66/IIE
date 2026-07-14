@@ -42,10 +42,10 @@ __pycache__/
 venv/
 env/
 
-# ── 模型源文件（仓库中只保留 assets/u2netp.tflite）──
-u2netp.onnx.data
-u2netp.pth.zip
-u2netp.tflite
+# ── 模型源文件（仓库中只保留 app/src/main/assets/u2netp.tflite）──
+/u2netp.onnx.data
+/u2netp.pth.zip
+/u2netp.tflite
 
 # ── 日志与临时文件 ──
 *.log
