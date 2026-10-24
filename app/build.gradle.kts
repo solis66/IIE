@@ -4,6 +4,19 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+// ── API 密钥注入 ──
+// 从根目录 local.properties（已被 .gitignore 忽略）读取密钥，编译期注入 BuildConfig。
+// 密钥不进源码、不进 Git 仓库；缺失时以空串占位（构建可通过，运行时识别请求会鉴权失败）。
+import java.util.Properties
+
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+
+fun secretProperty(key: String): String =
+    "\"${localProps.getProperty(key)?.trim().orEmpty()}\""
+
 android {
     namespace = "com.example.lexiscan"
     compileSdk = 35
@@ -19,6 +32,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "SILICONFLOW_API_KEY", secretProperty("SILICONFLOW_API_KEY"))
+        buildConfigField("String", "DEEPSEEK_API_KEY", secretProperty("DEEPSEEK_API_KEY"))
     }
 
     buildTypes {
@@ -42,6 +58,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {

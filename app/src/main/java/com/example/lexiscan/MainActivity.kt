@@ -9,33 +9,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.example.lexiscan.data.model.RecognitionRecord
 import com.example.lexiscan.ui.screens.CameraScreen
 import com.example.lexiscan.ui.screens.HistoryDetailScreen
@@ -43,7 +32,10 @@ import com.example.lexiscan.ui.screens.HistoryListScreen
 import com.example.lexiscan.ui.screens.HomeScreen
 import com.example.lexiscan.ui.screens.RecognitionResultDialog
 import com.example.lexiscan.ui.theme.LexiScanTheme
-import com.example.lexiscan.ui.theme.warmOrange
+import com.example.lexiscan.ui.theme.inkBlue
+import com.example.lexiscan.ui.theme.redPen
+import com.example.lexiscan.ui.components.paperBackground
+import com.example.lexiscan.ui.components.sketchBorder
 import com.example.lexiscan.viewmodel.RecognitionViewModel
 import com.example.lexiscan.util.TtsManager
 
@@ -93,6 +85,7 @@ fun AppNavigation(viewModel: RecognitionViewModel, ttsManager: TtsManager) {
     val chineseName = viewModel.chineseName.collectAsState()
     val plural = viewModel.plural.collectAsState()
     val exampleSentence = viewModel.exampleSentence.collectAsState()
+    val wordClass = viewModel.wordClass.collectAsState()
     val isEnglishValid = viewModel.isEnglishValid.collectAsState()
     val isSegmented = viewModel.isSegmented.collectAsState()
     val segmentedForegroundUri = viewModel.segmentedForegroundUri.collectAsState()
@@ -167,6 +160,7 @@ fun AppNavigation(viewModel: RecognitionViewModel, ttsManager: TtsManager) {
                 chineseName = chineseName.value,
                 plural = plural.value,
                 exampleSentence = exampleSentence.value,
+                wordClass = wordClass.value,
                 isEnglishValid = isEnglishValid.value,
                 isSegmented = isSegmented.value,
                 isCollected = isCollected.value,
@@ -185,14 +179,15 @@ fun AppNavigation(viewModel: RecognitionViewModel, ttsManager: TtsManager) {
             )
         }
         showAllHistory -> {
-            // 显示全部历史记录列表页（点击"查看更多"进入）
+            // 显示全部历史记录列表页（点击"全部 →"进入）
             HistoryListScreen(
                 records = history,
                 onBack = { showAllHistory = false },
                 onItemClick = { record ->
                     selectedHistoryRecord = record
                     showAllHistory = false
-                }
+                },
+                onAudioClick = { record -> ttsManager.speak(record.englishName) }
             )
         }
         selectedHistoryRecord != null -> {
@@ -241,14 +236,15 @@ fun AppNavigation(viewModel: RecognitionViewModel, ttsManager: TtsManager) {
                     }
                 },
                 onHistoryItemClick = { record -> selectedHistoryRecord = record },
-                onViewAllHistory = { showAllHistory = true }
+                onViewAllHistory = { showAllHistory = true },
+                onAudioClick = { record -> ttsManager.speak(record.englishName) }
             )
         }
     }
 }
 
 /**
- * 相机权限请求页面
+ * 相机权限请求页面（教授讲义风）
  * 当用户未授予相机权限时显示
  */
 @Composable
@@ -259,7 +255,7 @@ fun CameraPermissionRequest(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .paperBackground()
     ) {
         Column(
             modifier = Modifier
@@ -275,27 +271,35 @@ fun CameraPermissionRequest(
             Text(
                 text = "需要相机权限",
                 fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                fontWeight = FontWeight.SemiBold,
+                color = inkBlue
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 text = "请授予相机权限以使用拍照识别功能",
                 fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.7f)
+                color = inkBlue.copy(alpha = 0.65f)
             )
             Spacer(Modifier.height(24.dp))
-            Button(
-                onClick = onRequestPermission,
-                colors = ButtonDefaults.buttonColors(containerColor = warmOrange)
+            // 授权按钮：手绘虚线红笔框
+            Box(
+                modifier = Modifier
+                    .sketchBorder(redPen, strokeWidth = 2.dp)
+                    .clickable(onClick = onRequestPermission)
+                    .padding(horizontal = 28.dp, vertical = 10.dp)
             ) {
-                Text("授予权限")
+                Text(
+                    text = "授予权限",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = redPen
+                )
             }
             Spacer(Modifier.height(12.dp))
             Text(
                 text = "返回",
                 fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.5f),
+                color = inkBlue.copy(alpha = 0.45f),
                 modifier = Modifier
                     .clickable(onClick = onBackClick)
                     .padding(vertical = 8.dp, horizontal = 16.dp)

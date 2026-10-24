@@ -77,6 +77,9 @@ class RecognitionViewModel(application: Application) : AndroidViewModel(applicat
     private val _exampleSentence = MutableStateFlow<String?>(null)
     val exampleSentence: StateFlow<String?> = _exampleSentence
 
+    private val _wordClass = MutableStateFlow<String?>(null)
+    val wordClass: StateFlow<String?> = _wordClass
+
     private val _isEnglishValid = MutableStateFlow(true)
     val isEnglishValid: StateFlow<Boolean> = _isEnglishValid
 
@@ -164,6 +167,7 @@ class RecognitionViewModel(application: Application) : AndroidViewModel(applicat
                 _chineseName.value = result.chineseName
                 _plural.value = result.plural
                 _exampleSentence.value = result.exampleSentence
+                _wordClass.value = result.wordClass
 
                 val itemName = result.name
 
@@ -201,6 +205,7 @@ class RecognitionViewModel(application: Application) : AndroidViewModel(applicat
                         phonetic = result.phonetic,
                         plural = result.plural,
                         exampleSentence = result.exampleSentence,
+                        wordClass = result.wordClass,
                         confidence = result.confidence,
                         category = null,
                         recognitionMode = "SINGLE_OBJECT",
@@ -235,6 +240,7 @@ class RecognitionViewModel(application: Application) : AndroidViewModel(applicat
         _chineseName.value = null
         _plural.value = null
         _exampleSentence.value = null
+        _wordClass.value = null
         _isEnglishValid.value = true
         _isSegmented.value = false
         _segmentedForegroundUri.value = null

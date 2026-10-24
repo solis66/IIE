@@ -89,7 +89,8 @@ class DeepSeekVisionProvider(context: Context) : BaseBaiduProvider(context) {
             phonetic = std.phonetic,
             chineseName = std.chinese,
             plural = std.plural,
-            exampleSentence = std.exampleSentence
+            exampleSentence = std.exampleSentence,
+            wordClass = std.wordClass
         )
     }
 

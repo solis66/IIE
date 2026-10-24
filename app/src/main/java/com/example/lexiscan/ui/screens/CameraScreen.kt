@@ -51,8 +51,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.lexiscan.R
 import com.example.lexiscan.data.camera.CameraController
-import com.example.lexiscan.ui.components.LexiExpression
-import com.example.lexiscan.ui.components.LexiMascot
+import com.example.lexiscan.ui.components.paperBackground
 import com.example.lexiscan.ui.theme.*
 
 /**
@@ -123,7 +122,7 @@ fun CameraScreen(
             )
         }
 
-        // 顶部栏：返回按钮 + 右侧占位
+        // 顶部栏：返回按钮（右侧占位，原小狐狸表情已移除）
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -138,14 +137,7 @@ fun CameraScreen(
                     Text(text = "\u2039", fontSize = 26.sp, color = Color.White)
                 }
             )
-
-            // 右侧：Lexi 小狐狸状态表情
-            // 识别中显示 THINKING 表情，空闲时显示 HAPPY 表情
-            LexiMascot(
-                expression = if (isRecognizing) LexiExpression.THINKING else LexiExpression.IDLE,
-                sizePx = 40,
-                enableFloat = true
-            )
+            Spacer(modifier = Modifier.width(48.dp))
         }
 
         // 中间区域：拟态玻璃扫描框 + 提示文字
@@ -318,17 +310,16 @@ fun CaptureButton(onClick: () -> Unit) {
 }
 
 /**
- * 四角直角顶点扫描框（仿 CapWords 取景框）
+ * 手绘虚线扫描框（教授讲义风取景框）
  *
  * 视觉设计：
- * - 去除完整的矩形边框线，仅保留四个 L 形直角顶点
- * - 四个角标扩大范围（线长 40dp，线宽 4dp），形成更开阔的取景指引
- * - 角标透明度呼吸动画（0.4~0.8），引导用户对焦
- * - 线条端点用圆角（StrokeCap.Round），视觉更柔和
+ * - 墨白色虚线圆角矩形模拟手画的框（PathEffect.dashPathEffect）
+ * - 四角叠加 L 形短实线加强（线长 40dp，线宽 3.5dp）
+ * - 透明度呼吸动画（0.4~0.8），引导用户对焦
  */
 @Composable
 fun GlassScanFrame() {
-    // 呼吸光效动画：角标透明度在 0.4~0.8 之间循环渐变
+    // 呼吸动画：边框透明度在 0.4~0.8 之间循环渐变
     val infiniteTransition = rememberInfiniteTransition(label = "scan_frame")
     val borderAlpha by infiniteTransition.animateFloat(
         initialValue = 0.4f,
@@ -340,13 +331,12 @@ fun GlassScanFrame() {
         label = "border_alpha"
     )
 
-    // 角标参数：线长 40dp（扩大取景范围），线宽 4dp
+    // 角标参数：线长 40dp，线宽 3.5dp
     val cornerLength = 40.dp
-    val cornerStroke = 4.dp
+    val cornerStroke = 3.5.dp
 
     // 容器尺寸与取景框一致
     Box(modifier = Modifier.size(256.dp)) {
-        // 用 Canvas 绘制四个 L 形直角顶点（无连接线）
         Canvas(modifier = Modifier.fillMaxSize()) {
             val w = size.width
             val h = size.height
@@ -354,19 +344,35 @@ fun GlassScanFrame() {
             val stroke = cornerStroke.toPx()
             val color = Color.White.copy(alpha = borderAlpha)
 
-            // 左上角 L 形：水平线（左→右）+ 垂直线（上→下）
+            // 1. 手绘感虚线矩形框（不规则四角圆角）
+            val rect = androidx.compose.ui.geometry.RoundRect(
+                rect = androidx.compose.ui.geometry.Rect(0f, 0f, w, h),
+                topLeft = androidx.compose.ui.geometry.CornerRadius(22.dp.toPx(), 12.dp.toPx()),
+                topRight = androidx.compose.ui.geometry.CornerRadius(26.dp.toPx(), 16.dp.toPx()),
+                bottomRight = androidx.compose.ui.geometry.CornerRadius(18.dp.toPx(), 24.dp.toPx()),
+                bottomLeft = androidx.compose.ui.geometry.CornerRadius(14.dp.toPx(), 26.dp.toPx())
+            )
+            val framePath = androidx.compose.ui.graphics.Path().apply {
+                addRoundRect(rect)
+            }
+            drawPath(
+                path = framePath,
+                color = color.copy(alpha = color.alpha * 0.7f),
+                style = androidx.compose.ui.graphics.drawscope.Stroke(
+                    width = 2.dp.toPx(),
+                    pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(
+                        floatArrayOf(9.dp.toPx(), 7.dp.toPx())
+                    )
+                )
+            )
+
+            // 2. 四角 L 形短实线加强
             drawLine(color, Offset(0f, 0f), Offset(len, 0f), strokeWidth = stroke, cap = StrokeCap.Round)
             drawLine(color, Offset(0f, 0f), Offset(0f, len), strokeWidth = stroke, cap = StrokeCap.Round)
-
-            // 右上角 L 形：水平线（右→左）+ 垂直线（上→下）
             drawLine(color, Offset(w, 0f), Offset(w - len, 0f), strokeWidth = stroke, cap = StrokeCap.Round)
             drawLine(color, Offset(w, 0f), Offset(w, len), strokeWidth = stroke, cap = StrokeCap.Round)
-
-            // 左下角 L 形：水平线（左→右）+ 垂直线（下→上）
             drawLine(color, Offset(0f, h), Offset(len, h), strokeWidth = stroke, cap = StrokeCap.Round)
             drawLine(color, Offset(0f, h), Offset(0f, h - len), strokeWidth = stroke, cap = StrokeCap.Round)
-
-            // 右下角 L 形：水平线（右→左）+ 垂直线（下→上）
             drawLine(color, Offset(w, h), Offset(w - len, h), strokeWidth = stroke, cap = StrokeCap.Round)
             drawLine(color, Offset(w, h), Offset(w, h - len), strokeWidth = stroke, cap = StrokeCap.Round)
         }
@@ -570,7 +576,7 @@ fun TearScanOverlay(
         }
 
         // ================================================================
-        // 底部状态提示：小狐狸 THINKING + 文字
+        // 底部状态提示：纸墨手写风状态条（撕开讲义 / 裁剪标本 / 教授批改中）
         // ================================================================
         Row(
             modifier = Modifier
@@ -580,70 +586,29 @@ fun TearScanOverlay(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LexiMascot(
-                expression = LexiExpression.THINKING,
-                sizePx = 44,
-                enableFloat = true
-            )
-            Spacer(modifier = Modifier.width(10.dp))
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
-                    .background(Color.Black.copy(alpha = 0.75f))
+                    .background(paperBg.copy(alpha = 0.92f))
                     .border(
                         width = 1.dp,
-                        color = warmOrange.copy(alpha = 0.5f),
+                        color = inkBlue.copy(alpha = 0.35f),
                         shape = RoundedCornerShape(16.dp)
                     )
                     .padding(horizontal = 18.dp, vertical = 12.dp)
             ) {
                 val statusText = when {
-                    tearComplete && showForeground -> "正在识别…"
-                    tearComplete && !showForeground -> "正在抠图…"
-                    else -> "正在撕拉…"
+                    tearComplete && showForeground -> "教授批改中…"
+                    tearComplete && !showForeground -> "裁剪标本…"
+                    else -> "撕开讲义…"
                 }
                 Text(
                     text = statusText,
                     fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    fontWeight = FontWeight.SemiBold,
+                    color = inkBlue
                 )
             }
-        }
-    }
-}
-
-/**
- * 加载提示 Toast
- * 玻璃拟态背景 + 进度圈 + 文字提示
- */
-@Composable
-fun LoadingToast() {
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color.Black.copy(alpha = 0.7f))
-            .border(
-                width = 1.dp,
-                color = Color.White.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(16.dp)
-            )
-            .padding(horizontal = 20.dp, vertical = 12.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(20.dp),
-                color = warmOrange, // 暖橙色进度圈，与主色调统一
-                strokeWidth = 2.dp
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = stringResource(R.string.loading_recognizing),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.White
-            )
         }
     }
 }

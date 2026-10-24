@@ -12,6 +12,7 @@ data class RecognitionRecord(
     val phonetic: String? = null,
     val plural: String? = null,           // 复数形式
     val exampleSentence: String? = null,  // 少儿英语短句例句
+    val wordClass: String? = null,        // 中文词性（名词/动词等，DeepSeek 返回；旧记录为 null）
     val category: String? = null,
     val recognitionMode: String = "SINGLE_OBJECT",
     val timestamp: Long = System.currentTimeMillis()

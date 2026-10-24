@@ -1,0 +1,2 @@
+在Android studio的终端中输入下面命令
+D:\Android\SDK\platform-tools\ adb.exe connect 127.0.0.1:16384

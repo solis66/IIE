@@ -2,94 +2,82 @@ package com.example.lexiscan.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import com.example.lexiscan.R
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-// ── 暖色调色彩系统（第一阶段核心视觉升级）──
-// 品牌关键词：温暖 · 智趣 · 陪伴式学习
+// ── 教授讲义配色系统（蓝黑备课笔记）──
+// 品牌关键词：米色讲义纸 · 蓝黑钢笔 · 红笔批注
+// 正文用蓝黑墨，红色只留给音标与重点标注（教授的红笔）
 
-// P0 主强调色 - 暖橙色（用于主按钮、核心行动）
-val warmOrange = Color(0xFFFF7E5F)
-val warmOrangeLight = Color(0xFFFEB47B)
+// 米色讲义纸背景
+val paperBg = Color(0xFFF6F0DF)
 
-// P1 次强调色 - 淡紫色（用于音标、收藏等功能标签）
-val warmPurple = Color(0xFF9B89B3)
+// 纸面横线（浅蓝灰，极淡）
+val paperLine = Color(0xFF5A6E96).copy(alpha = 0.11f)
 
-// P2 辅助色 - 薄荷绿（用于复数、成功状态）
-val warmMint = Color(0xFF88D8B0)
+// 蓝黑钢笔墨（正文）
+val inkBlue = Color(0xFF2C3E5D)
 
-// 背景色 - 暖米色（加深以提升状态栏文字可见性，保持暖色调）
-val warmBg = Color(0xFFF3E9DD)
+// 红笔（音标、重点、强调动作）
+val redPen = Color(0xFFB03A2E)
 
-// 卡片背景 - 纯白
+// ── 旧暖色系常量的映射（最小改动兼容，新代码请直接用上面的新名称）──
+val warmBg = paperBg
+val warmOrange = redPen
+val warmOrangeLight = redPen
+val warmPurple = redPen
+val warmMint = inkBlue
 val warmCardBg = Color.White
-
-// 文字颜色层级
-val warmTextPrimary = Color(0xFF3E342F)  // 深咖啡色（代替纯黑，更柔和）
-val warmTextSecondary = Color(0xFF8C7E74) // 暖灰文字
-val warmTextTertiary = Color(0xFFBDB2AA)  // 浅暖灰（用于时间、置信度等）
-
-// 阴影色 - 暖色阴影，更自然
-val warmShadow = Color(0x1A3E342F)
-
-// 玻璃拟态颜色
+val warmTextPrimary = inkBlue
+val warmTextSecondary = inkBlue.copy(alpha = 0.65f)
+val warmTextTertiary = inkBlue.copy(alpha = 0.45f)
+val warmShadow = Color(0x1A2C3E5D)
 val glassLight = Color.White.copy(alpha = 0.15f)
 val glassBorder = Color.White.copy(alpha = 0.25f)
 
-// 暗色模式颜色
-val darkBg = Color(0xFF2A2420)
-val darkSurface = Color(0xFF3D3430)
+// ── 英文手写字体：Caveat（OFL 开源，约 400KB 可变字重）──
+// 用于英文单词、音标、英文例句与英文 UI 文案；中文一律保持系统字体
+val CaveatFamily = FontFamily(Font(R.font.caveat, FontWeight.Normal))
 
-// ── Material3 配色方案 ──
-private val DarkColorScheme = darkColorScheme(
-    primary = warmOrange,
-    secondary = warmPurple,
-    background = darkBg,
-    surface = darkSurface,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onBackground = Color.White,
-    onSurface = Color.White
-)
-
+// ── Material3 配色方案（本轮强制浅色讲义纸，不做暗色适配）──
 private val LightColorScheme = lightColorScheme(
-    primary = warmOrange,
-    secondary = warmPurple,
-    background = warmBg,
-    surface = warmCardBg,
+    primary = redPen,
+    secondary = inkBlue,
+    background = paperBg,
+    surface = Color.White,
     onPrimary = Color.White,
     onSecondary = Color.White,
-    onBackground = warmTextPrimary,
-    onSurface = warmTextPrimary
+    onBackground = inkBlue,
+    onSurface = inkBlue
 )
 
 /**
  * LexiScan 主题入口
- * 使用暖色调色彩系统，统一全应用视觉风格
+ * 使用教授讲义配色系统；忽略系统暗色模式（各界面按浅色纸面硬编码）
  */
 @Composable
 fun LexiScanTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-
-    // 状态栏图标颜色适配：浅色模式用深色图标，深色模式用浅色图标
-    // 解决小米等机型在浅色背景上看不清状态栏文字的问题
+    // 状态栏图标固定深色（浅色纸面背景）
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setStatusBarColor(
             color = Color.Transparent,
-            darkIcons = !darkTheme
+            darkIcons = true
         )
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = LightColorScheme,
         typography = Typography,
         content = content
     )

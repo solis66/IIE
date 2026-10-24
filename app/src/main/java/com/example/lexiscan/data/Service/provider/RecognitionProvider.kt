@@ -26,7 +26,8 @@ data class ProviderResult(
     val phonetic: String? = null,    // 英文音标，如 ˈæp.əl
     val chineseName: String? = null, // 中文名，如 苹果
     val plural: String? = null,      // 复数形式
-    val exampleSentence: String? = null  // 少儿英语短句例句
+    val exampleSentence: String? = null,  // 少儿英语短句例句
+    val wordClass: String? = null    // 中文词性（名词/动词等）
 )
 
 /**
@@ -199,6 +200,7 @@ abstract class BaseBaiduProvider(protected val context: Context) : RecognitionPr
                     phonetic = word.phonetic,
                     plural = word.plural,
                     exampleSentence = word.exampleSentence,
+                    wordClass = word.wordClass,
                     source = "DeepSeek"
                 )
             } else {
@@ -227,6 +229,7 @@ abstract class BaseBaiduProvider(protected val context: Context) : RecognitionPr
                 phonetic = null,
                 plural = null,
                 exampleSentence = null,
+                wordClass = null,
                 source = "RawName"
             )
         }
@@ -238,6 +241,7 @@ abstract class BaseBaiduProvider(protected val context: Context) : RecognitionPr
             phonetic = ph,
             plural = null,
             exampleSentence = null,
+            wordClass = null,
             source = "Dictionary"
         )
     }
@@ -252,5 +256,6 @@ data class StandardizationResult(
     val phonetic: String?,
     val plural: String?,
     val exampleSentence: String?,
-    val source: String   // "DeepSeek" | "BaiduTranslate" | "Dictionary"
+    val wordClass: String? = null,  // 中文词性（DeepSeek 提供，降级链路为 null）
+    val source: String   // "DeepSeek" | "Dictionary" | "RawName"
 )

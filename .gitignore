@@ -56,3 +56,8 @@ env/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ── 本地工作产物（不入库）──
+.superpowers/
+archive/
+refero-collage-redesign/

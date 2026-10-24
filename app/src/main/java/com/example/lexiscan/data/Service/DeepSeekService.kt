@@ -18,7 +18,8 @@ data class StandardizedWord(
     val chineseMeaning: String,    // 中文释义
     val phonetic: String,          // 音标（英式IPA，如 /ˈæp.əl/）
     val plural: String,            // 复数形式
-    val exampleSentence: String    // 少儿英语短句例句
+    val exampleSentence: String,   // 少儿英语短句例句
+    val wordClass: String? = null  // 中文词性（名词/动词等；旧格式无此字段时为 null）
 )
 
 // ──── DeepSeek API 请求/响应模型 ────
@@ -102,27 +103,31 @@ You are an English vocabulary tutor for Chinese children (ages 6-12). You will r
      - "She has a yellow school bag."
      - "Can you see the butterfly?"
 
+6. **Word Class**: The Chinese part of speech of the standard word. Use exactly one of:
+   - "名词" (most objects), "动词", "形容词", "副词", "短语"
+   Examples: apple → "名词", run → "动词"
+
 ## Output Format
 
 Return ONLY a single JSON object. No markdown, no code fences, no explanation:
-{"standardEnglish":"apple","chineseMeaning":"苹果","phonetic":"/ˈæp.əl/","plural":"apples","exampleSentence":"I eat an apple every day."}
+{"standardEnglish":"apple","chineseMeaning":"苹果","phonetic":"/ˈæp.əl/","plural":"apples","exampleSentence":"I eat an apple every day.","wordClass":"名词"}
 
 ## Examples
 
 Input: 苹果
-Output: {"standardEnglish":"apple","chineseMeaning":"苹果","phonetic":"/ˈæp.əl/","plural":"apples","exampleSentence":"I eat an apple every day."}
+Output: {"standardEnglish":"apple","chineseMeaning":"苹果","phonetic":"/ˈæp.əl/","plural":"apples","exampleSentence":"I eat an apple every day.","wordClass":"名词"}
 
 Input: 红富士
-Output: {"standardEnglish":"apple","chineseMeaning":"苹果","phonetic":"/ˈæp.əl/","plural":"apples","exampleSentence":"I eat an apple every day."}
+Output: {"standardEnglish":"apple","chineseMeaning":"苹果","phonetic":"/ˈæp.əl/","plural":"apples","exampleSentence":"I eat an apple every day.","wordClass":"名词"}
 
 Input: kitty cat
-Output: {"standardEnglish":"cat","chineseMeaning":"猫","phonetic":"/kæt/","plural":"cats","exampleSentence":"The cat is sleeping on the sofa."}
+Output: {"standardEnglish":"cat","chineseMeaning":"猫","phonetic":"/kæt/","plural":"cats","exampleSentence":"The cat is sleeping on the sofa.","wordClass":"名词"}
 
 Input: 自行车
-Output: {"standardEnglish":"bicycle","chineseMeaning":"自行车","phonetic":"/ˈbaɪ.sɪ.kəl/","plural":"bicycles","exampleSentence":"I ride my bicycle to school."}
+Output: {"standardEnglish":"bicycle","chineseMeaning":"自行车","phonetic":"/ˈbaɪ.sɪ.kəl/","plural":"bicycles","exampleSentence":"I ride my bicycle to school.","wordClass":"名词"}
 
 Input: dog
-Output: {"standardEnglish":"dog","chineseMeaning":"狗","phonetic":"/dɒɡ/","plural":"dogs","exampleSentence":"The dog is very friendly."}
+Output: {"standardEnglish":"dog","chineseMeaning":"狗","phonetic":"/dɒɡ/","plural":"dogs","exampleSentence":"The dog is very friendly.","wordClass":"名词"}
 """.trimIndent()
     }
 
