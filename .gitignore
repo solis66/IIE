@@ -61,3 +61,7 @@ desktop.ini
 .superpowers/
 archive/
 refero-collage-redesign/
+
+# ── 本地留档（历史素材，不入库）──
+/学士狐-*.png
+/modify.md
